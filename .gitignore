@@ -1,15 +1,44 @@
+# Jupyter
+.ipynb_checkpoints/
+
+# Data files (avoid pushing huge datasets)
+*.csv
+raw/
+processed/
+citibike_2022/
+2022-citibike-tripdata/
+
+
 # Ignore raw data
 data/raw/
 
-# Ignore processed large files
+# Ignore processed big files
 data/processed/*.csv
 
-# Ignore python cache
-__pycache__/
-.ipynb_checkpoints/
-
-venv/
-data/raw/
-.ipynb_checkpoints/
-__pycache__/
+# mac files
 .DS_Store
+
+# python cache
+__pycache__/
+*.pyc
+
+# virtual environment
+venv/
+
+
+# Ignore raw data
+data/raw/
+
+# Ignore processed big files
+data/processed/*.csv
+
+# mac files
+.DS_Store
+
+# python cache
+__pycache__/
+*.pyc
+
+# virtual environment
+venv/
+
