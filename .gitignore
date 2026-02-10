@@ -7,6 +7,36 @@ raw/
 processed/
 citibike_2022/
 2022-citibike-tripdata/
+# Jupyter
+.ipynb_checkpoints/
+
+# Ignore raw trip data
+data/raw/
+
+# Ignore large processed dataset ONLY
+data/processed/citibike_weather_2022.csv
+
+# (keep small processed file)
+!data/processed/daily_weather_2022.csv
+!data/processed/noaa_lga_daily_2022.csv
+
+# mac system files
+.DS_Store
+# Jupyter
+.ipynb_checkpoints/
+
+# Ignore raw trip data
+data/raw/
+
+# Ignore large processed dataset ONLY
+data/processed/citibike_weather_2022.csv
+
+# (keep small processed file)
+!data/processed/daily_weather_2022.csv
+!data/processed/noaa_lga_daily_2022.csv
+
+# mac system files
+.DS_Store
 
 
 # Ignore raw data
