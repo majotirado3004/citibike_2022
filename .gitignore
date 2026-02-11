@@ -72,3 +72,4 @@ __pycache__/
 # virtual environment
 venv/
 
+outputs/trips_strong.csv
