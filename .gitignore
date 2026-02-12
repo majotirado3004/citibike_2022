@@ -1,3 +1,17 @@
+# ----- data / big files -----
+data/original/
+data/raw/
+data/processed/*.csv
+*.zip
+
+# ----- python / notebooks -----
+__pycache__/
+.ipynb_checkpoints/
+
+# ----- environments -----
+venv/
+.env/
+
 # Jupyter
 .ipynb_checkpoints/
 
