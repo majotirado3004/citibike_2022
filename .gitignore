@@ -1,89 +1,22 @@
-# ----- data / big files -----
-data/original/
-data/raw/
-data/processed/*.csv
-*.zip
+# Mac
+.DS_Store
 
-# ----- python / notebooks -----
-__pycache__/
-.ipynb_checkpoints/
-
-# ----- environments -----
+# Virtual environments
 venv/
-.env/
+.venv/
+
+# Data (never upload raw or processed datasets)
+data/
 
 # Jupyter
 .ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
 
-# Data files (avoid pushing huge datasets)
-*.csv
-raw/
-processed/
-citibike_2022/
-2022-citibike-tripdata/
-# Jupyter
-.ipynb_checkpoints/
-
-# Ignore raw trip data
-data/raw/
-
-# Ignore large processed dataset ONLY
-data/processed/citibike_weather_2022.csv
-
-# (keep small processed file)
-!data/processed/daily_weather_2022.csv
-!data/processed/noaa_lga_daily_2022.csv
-
-# mac system files
-.DS_Store
-# Jupyter
-.ipynb_checkpoints/
-
-# Ignore raw trip data
-data/raw/
-
-# Ignore large processed dataset ONLY
-data/processed/citibike_weather_2022.csv
-
-# (keep small processed file)
-!data/processed/daily_weather_2022.csv
-!data/processed/noaa_lga_daily_2022.csv
-
-# mac system files
-.DS_Store
-
-
-# Ignore raw data
-data/raw/
-
-# Ignore processed big files
-data/processed/*.csv
-
-# mac files
-.DS_Store
-
-# python cache
+# Python cache
 __pycache__/
-*.pyc
 
-# virtual environment
-venv/
+# Outputs (ignore all)
+outputs/
 
-
-# Ignore raw data
-data/raw/
-
-# Ignore processed big files
-data/processed/*.csv
-
-# mac files
-.DS_Store
-
-# python cache
-__pycache__/
-*.pyc
-
-# virtual environment
-venv/
-
-outputs/trips_strong.csv
+# BUT keep the map needed by Streamlit
+!outputs/task_2_5_kepler_map.html
