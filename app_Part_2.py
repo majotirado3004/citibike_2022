@@ -11,7 +11,7 @@ st.set_page_config(layout="wide")
 # ---------------- LOAD DATA ----------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("citibike_sample_seed32.csv")
+    df = pd.read_csv("citibike_deploy.csv", low_memory=False)
     return df
 
 df = load_data()
@@ -100,33 +100,109 @@ This indicates CitiBike demand is highly seasonal and fleet size should be adjus
 # ======================================================
 elif page == "Popular Stations":
 
-    st.title("Most Popular Start Stations")
+    st.title("Station Demand Concentration (Start vs End)")
 
-    top_stations = (
+    col1, col2 = st.columns(2)
+
+    # ---------- TOP START STATIONS ----------
+    with col1:
+        st.subheader("Top 10 Start Stations")
+
+        top_start = (
+            df.dropna(subset=["start_station_name"])
+            .groupby("start_station_name")
+            .size()
+            .sort_values(ascending=False)
+            .head(10)
+            .reset_index(name="trips")
+        )
+
+        fig_start = px.bar(
+            top_start,
+            x="trips",
+            y="start_station_name",
+            orientation="h",
+            labels={"trips": "Trips", "start_station_name": "Station"},
+        )
+        fig_start.update_layout(height=450, yaxis=dict(categoryorder="total ascending"))
+        st.plotly_chart(fig_start, use_container_width=True)
+
+    # ---------- TOP END STATIONS ----------
+    with col2:
+        st.subheader("Top 10 End Stations")
+
+        top_end = (
+            df.dropna(subset=["end_station_name"])
+            .groupby("end_station_name")
+            .size()
+            .sort_values(ascending=False)
+            .head(10)
+            .reset_index(name="trips")
+        )
+
+        fig_end = px.bar(
+            top_end,
+            x="trips",
+            y="end_station_name",
+            orientation="h",
+            labels={"trips": "Trips", "end_station_name": "Station"},
+        )
+        fig_end.update_layout(height=450, yaxis=dict(categoryorder="total ascending"))
+        st.plotly_chart(fig_end, use_container_width=True)
+
+    st.divider()
+
+    # ---------- NET FLOW (IMBALANCE) ----------
+    st.subheader("Net Flow (End trips − Start trips) — Rebalancing signal")
+
+    starts = (
         df.dropna(subset=["start_station_name"])
         .groupby("start_station_name")
         .size()
-        .sort_values(ascending=False)
-        .head(10)
-        .reset_index(name="trips")
+        .rename("start_trips")
     )
 
-    fig_bar = px.bar(
-        top_stations,
-        x="trips",
-        y="start_station_name",
-        orientation="h",
-        labels={"trips": "Trips", "start_station_name": "Station"},
+    ends = (
+        df.dropna(subset=["end_station_name"])
+        .groupby("end_station_name")
+        .size()
+        .rename("end_trips")
     )
 
-    fig_bar.update_layout(height=500, yaxis=dict(categoryorder="total ascending"))
-    st.plotly_chart(fig_bar, use_container_width=True)
+    net = (
+        pd.concat([starts, ends], axis=1)
+        .fillna(0)
+        .assign(net_flow=lambda x: x["end_trips"] - x["start_trips"])
+        .reset_index()
+        .rename(columns={"index": "station"})
+    )
+
+    colA, colB = st.columns(2)
+
+    with colA:
+        st.markdown("**Stations that likely RUN EMPTY (more starts than ends):**")
+        st.dataframe(
+            net.sort_values("net_flow", ascending=True).head(10)[
+                ["station", "start_trips", "end_trips", "net_flow"]
+            ],
+            use_container_width=True,
+        )
+
+    with colB:
+        st.markdown("**Stations that likely FILL UP (more ends than starts):**")
+        st.dataframe(
+            net.sort_values("net_flow", ascending=False).head(10)[
+                ["station", "start_trips", "end_trips", "net_flow"]
+            ],
+            use_container_width=True,
+        )
 
     st.markdown("""
 **Interpretation**
 
-A small number of stations handle a disproportionately large number of trips.  
-These high-demand stations are likely commuter hubs and require more frequent rebalancing.
+- Stations with strongly **negative net flow** are likely to **run empty** (high departures, fewer arrivals).  
+- Stations with strongly **positive net flow** are likely to **fill up** (many arrivals).  
+This is a direct operational signal for **truck rebalancing priorities** and where to add capacity or incentives.
 """)
 
 # ======================================================
